@@ -6,9 +6,7 @@ using namespace std;
 
 class Graph {
     private:
-        // TODO: best structure for edges?
-        // TODO: should this be reflexive?
-        set<pair<Vertex*, Vertex*>>* edges;
+        set<Edge*>* edges;
         set<Vertex*>* vertices;
     public:
         Graph();

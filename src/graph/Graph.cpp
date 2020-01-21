@@ -3,9 +3,10 @@
 #include <set>
 #include "Graph.h"
 #include "Vertex.h"
+#include "Edge.h"
 
 Graph::Graph() {
-    this.edges = new set<pair<Vertex*, Vertex*>>();
+    this.edges = new set<Edge*>();
     this.vertices = new set<Vertex*>();
 }
 
