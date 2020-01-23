@@ -11,7 +11,14 @@ Graph::Graph() {
 }
 
 Graph::~Graph() {
-    // TODO: iterate over sets, deleting pairs
+    set<Edge*>::iterator it;
+    for (it = this.edges->begin(); it != this.edges->end(); ++it) {
+        delete *it;
+    }
+    set<Vertex*>::iterator iter;
+    for (iter = this.vertices->begin(); iter != this.vertices->end(); ++iter) {
+        delete *iter;
+    }
     delete edges;
     delete vertices;
 }
@@ -31,21 +38,50 @@ Graph::~Graph() {
  *
  * For example, a text file could contain the following 
  * contents:
- * A * X
- * X * Y
- * Y * A
+ * A*X
+ * X*Y
+ * Y*A
  * This schematic constructs a 3-node cycle.
  */
 bool Graph::import(string filename) {
     string line;
+    int lineNum = 1;
+    string delim = "*";
     ifstream graphFile(filename);
     if (graphFile.is_open()) {
         while (getline(graphFile, line)) {
-            // TODO: split line by edge delimiter
-            // TODO: search for vertices by name
-            // TODO: if v doesn't exist, create it
-            // TODO: create new pair
-            cout << line << '\n';
+            // split line by edge delimiter
+            // NOTE: assuming that the line doesn't have any whitespace; 
+            // use a strip function if desired.
+            if (line.find(delim) == npos) {
+                // no delimiter found; invalid format
+                cerr << "Error parsing line " << lineNum<< " in import file " << filename;
+                cerr << ". Line was: " << line << endl;
+            }
+            string first = line.substr(0, line.find(delim));
+            string second = line.substr(line.find(delim) + 1, npos);
+            // search for vertices by name
+            Vertex* f = nullptr;
+            Vertex* s = nullptr;
+            set<Vertex*>::iterator it;
+            for (it = this.vertices->begin(); it != this.vertices->end(); ++it) {
+                if (*it->getName() == first) f = *it;
+                if (*it->getName() == second) s = *it;
+            }
+            // if v doesn't exist, create it
+            if (f = nullptr) {
+                f = new Vertex();
+                f->setName(first);
+                this.vertices->insert(f);
+            }
+            if (s == nullptr) {
+                s = new Vertex();
+                s->setName(second);
+                this.vertices->insert(s);
+            }
+            // create new Edge
+            Edge* e = new Edge(s, f);
+            this.edges->insert(e);
         }
         myfile.close();
     } else { 
@@ -55,18 +91,26 @@ bool Graph::import(string filename) {
     return true;
 }
 
-bool Graph::join(Vertex* a, Vertex* b) {
+bool Graph::join(Vertex* a, Vertex* b, bool belongs = true) {
     if (a == nullptr || b == nullptr) {
         cerr << "Graph::join(): One or both of the"
              << " vertices are nullptrs." << endl;
         return false;
     }
-    edges->add(make_pair(a, b));
-    edges->add(make_pair(b, a));
+    Edge* e = new Edge(a, b, belongs);
+    this.edges->insert(e);
     return true;
 }
 
 bool Graph::separate(Vertex* a, Vertex* b) {
-    // TODO
-    return false;
+    bool found = false;
+    Edge* e = new Edge(a, b, false);
+    set<Edge*>::iterator it;
+    for (it = this.edges->begin(); it != this.edges->end(); ++it) {
+        // compare pointer values for now; may try to check name/label later?
+        if (e == *it) this.edges->erase(it);
+        found = true;
+    }
+    delete e;
+    return found;
 }
