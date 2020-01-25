@@ -1,21 +1,24 @@
+#include "Vertex.h"
+#include <string>
+
 using namespace std;
 
 Vertex::Vertex() {
-    this.label = "";
-    this.name = "";
+    this->label = "";
+    this->name = "";
 }
 
 Vertex::~Vertex() {
 }
 
-bool Vertex::setLabel(string l) {
-    this.label = l;
+void Vertex::setLabel(string l) {
+    this->label = l;
 }
 
-bool Vertex::setName(string name) {
-    this.name = name;
+void Vertex::setName(string name) {
+    this->name = name;
 }
 
 string Vertex::getName() {
-    return this.name;
+    return this->name;
 }

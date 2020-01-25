@@ -1,7 +1,9 @@
 #include <string>
-#include <iostream>
 
 using namespace std;
+
+#ifndef VERTEX_H__
+#define VERTEX_H__
 
 class Vertex {
     private:
@@ -10,7 +12,9 @@ class Vertex {
     public:
         Vertex();
         ~Vertex();
-        bool setLabel(string);
-        bool setName(string);
+        void setLabel(string);
+        void setName(string);
         string getName();
 };
+
+#endif          // VERTEX_H__

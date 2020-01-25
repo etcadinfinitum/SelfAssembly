@@ -1,22 +1,23 @@
 #include <utility>  // std::pair, std::make_pair
 #include <string>
 #include <set>
+#include <fstream>  // std::ifstream
 #include "Graph.h"
 #include "Vertex.h"
 #include "Edge.h"
 
 Graph::Graph() {
-    this.edges = new set<Edge*>();
-    this.vertices = new set<Vertex*>();
+    this->edges = new set<Edge*>();
+    this->vertices = new set<Vertex*>();
 }
 
 Graph::~Graph() {
     set<Edge*>::iterator it;
-    for (it = this.edges->begin(); it != this.edges->end(); ++it) {
+    for (it = this->edges->begin(); it != this->edges->end(); ++it) {
         delete *it;
     }
     set<Vertex*>::iterator iter;
-    for (iter = this.vertices->begin(); iter != this.vertices->end(); ++iter) {
+    for (iter = this->vertices->begin(); iter != this->vertices->end(); ++iter) {
         delete *iter;
     }
     delete edges;
@@ -53,37 +54,37 @@ bool Graph::import(string filename) {
             // split line by edge delimiter
             // NOTE: assuming that the line doesn't have any whitespace; 
             // use a strip function if desired.
-            if (line.find(delim) == npos) {
+            if (line.find(delim) == string::npos) {
                 // no delimiter found; invalid format
                 cerr << "Error parsing line " << lineNum<< " in import file " << filename;
                 cerr << ". Line was: " << line << endl;
             }
             string first = line.substr(0, line.find(delim));
-            string second = line.substr(line.find(delim) + 1, npos);
+            string second = line.substr(line.find(delim) + 1, string::npos);
             // search for vertices by name
             Vertex* f = nullptr;
             Vertex* s = nullptr;
             set<Vertex*>::iterator it;
-            for (it = this.vertices->begin(); it != this.vertices->end(); ++it) {
-                if (*it->getName() == first) f = *it;
-                if (*it->getName() == second) s = *it;
+            for (it = this->vertices->begin(); it != this->vertices->end(); ++it) {
+                if ((*it)->getName() == first) f = *it;
+                if ((*it)->getName() == second) s = *it;
             }
             // if v doesn't exist, create it
             if (f = nullptr) {
                 f = new Vertex();
                 f->setName(first);
-                this.vertices->insert(f);
+                this->vertices->insert(f);
             }
             if (s == nullptr) {
                 s = new Vertex();
                 s->setName(second);
-                this.vertices->insert(s);
+                this->vertices->insert(s);
             }
             // create new Edge
             Edge* e = new Edge(s, f);
-            this.edges->insert(e);
+            this->edges->insert(e);
         }
-        myfile.close();
+        graphFile.close();
     } else { 
         cout << "Unable to open file";
         return false;
@@ -91,14 +92,14 @@ bool Graph::import(string filename) {
     return true;
 }
 
-bool Graph::join(Vertex* a, Vertex* b, bool belongs = true) {
+bool Graph::join(Vertex* a, Vertex* b, bool belongs) {
     if (a == nullptr || b == nullptr) {
         cerr << "Graph::join(): One or both of the"
              << " vertices are nullptrs." << endl;
         return false;
     }
     Edge* e = new Edge(a, b, belongs);
-    this.edges->insert(e);
+    this->edges->insert(e);
     return true;
 }
 
@@ -106,9 +107,9 @@ bool Graph::separate(Vertex* a, Vertex* b) {
     bool found = false;
     Edge* e = new Edge(a, b, false);
     set<Edge*>::iterator it;
-    for (it = this.edges->begin(); it != this.edges->end(); ++it) {
+    for (it = this->edges->begin(); it != this->edges->end(); ++it) {
         // compare pointer values for now; may try to check name/label later?
-        if (e == *it) this.edges->erase(it);
+        if (e == *it) this->edges->erase(it);
         found = true;
     }
     delete e;

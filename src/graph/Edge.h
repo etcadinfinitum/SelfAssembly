@@ -1,30 +1,21 @@
 #include "Vertex.h"
 
-Edge::Edge(Vertex* a, Vertex* b, bool belongs = true) {
-    this.a = a;
-    this.b = b;
-    // we can specify at creation time whether the 
-    // edge is a member of the target graph G.
-    this.belongs = belongs;
-}
+using namespace std;
 
-Edge::~Edge() {
-    // do not delete member vertices; bad things would happen
-}
+#ifndef EDGE_H__
+#define EDGE_H__
 
-bool operator==(const Edge& lhs, const Edge& rhs) {
-    if (lhs.getFirst() == rhs.getFirst() && lhs.getSecond() == rhs.getSecond()) {
-        return true;
-    } else if (lhs.getFirst() == rhs.getSecond() && lhs.getSecond() == rhs.getFirst()) {
-        return true;
-    }
-    return false;
-}
+class Edge {
+    private:
+        Vertex* a;
+        Vertex* b;
+        bool belongs;
+    public:
+        Edge(Vertex*, Vertex*, bool belongs = true);
+        ~Edge();
+        friend bool operator==(const Edge& lhs, const Edge& rhs);
+        Vertex* getFirst() const;
+        Vertex* getSecond() const;
+};
 
-Vertex* Edge::getFirst() {
-    return a;
-}
-
-Vertex* Edge::getSecond() {
-    return b;
-}
+#endif          // EDGE_H__
