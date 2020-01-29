@@ -329,16 +329,31 @@ phi = { a a --> b-c
         b d --> f-g }
 ```
 
-A single rule is added:
+In order to satisfy the hypothesis's constraints, a single rule is added:
 
 ```
 phi = phi U { e-g-f-e --> e-d b-e }
 ```
 
+If we apply this new rule to arbitrarily-sized covers of _G_, we discover 
+that covers are broken down without fail due to the final rule's applicability 
+to covers of _G_. 
 
+However, the rule must be designed so that it cannot be applied to _G_ itself, 
+since _G_ is defined to be stable. To achieve this, we must specify two nodes 
+in the left side of the rule which cannot belong in the same stable cycle; that 
+is, the rule must include nodes which belong to separate copies of _G_. To do 
+that, the rule must have a copy of every labeled node in _G_'s cycle plus one 
+node, and by implication, the rule must have a copy of every edge in _G_'s cycle.
+
+![destruction of covers](./img/th3.2.png)
 
 #### Implications
 
 1. The rule or rules in &Phi; which satisfy this theorem are most likely 
    destructive, or lead to additional destructive rules. This property 
    must be true to reduce an N-way cover to the trivial cover.
+2. The same pattern of witnesses and rules which form covers and revert 
+   the covers' state can be applied forever in loops. Supplying rules which 
+   ensure a cover is not a stable formation doesn't guarantee that the 
+   stable graph will be formed.
