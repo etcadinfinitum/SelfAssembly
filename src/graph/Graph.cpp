@@ -86,7 +86,7 @@ bool Graph::import(string filename) {
         }
         graphFile.close();
     } else { 
-        cout << "Unable to open file";
+        cout << "Unable to open file" << endl;
         return false;
     }
     return true;
@@ -98,9 +98,11 @@ bool Graph::join(Vertex* a, Vertex* b, bool belongs) {
              << " vertices are nullptrs." << endl;
         return false;
     }
+    this->vertices->insert(a);
+    this->vertices->insert(b);
     Edge* e = new Edge(a, b, belongs);
-    this->edges->insert(e);
-    return true;
+    pair<set::iterator<Edge*>, bool> ret = this->edges->insert(e);
+    return ret.second;
 }
 
 bool Graph::separate(Vertex* a, Vertex* b) {
@@ -109,8 +111,10 @@ bool Graph::separate(Vertex* a, Vertex* b) {
     set<Edge*>::iterator it;
     for (it = this->edges->begin(); it != this->edges->end(); ++it) {
         // compare pointer values for now; may try to check name/label later?
-        if (e == *it) this->edges->erase(it);
-        found = true;
+        if (e == *it) {
+            this->edges->erase(it);
+            found = true;
+        }
     }
     delete e;
     return found;
