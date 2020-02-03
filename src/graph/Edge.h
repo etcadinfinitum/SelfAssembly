@@ -14,6 +14,7 @@ class Edge {
         Edge(Vertex*, Vertex*, bool belongs = true);
         ~Edge();
         friend bool operator==(const Edge& lhs, const Edge& rhs);
+        friend bool operator<(const Edge&, const Edge&);
         Vertex* getFirst() const;
         Vertex* getSecond() const;
 };
