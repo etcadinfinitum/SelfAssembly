@@ -30,9 +30,14 @@ bool operator==(const Edge& lhs, const Edge& rhs) {
 
 bool operator<(const Edge& lhs, const Edge& rhs) {
     // vertex pair is ordered; compare element by element
-    if (lhs.a < rhs.a) return true;
-    if (lhs.a == rhs.a && lhs.b < rhs.b) return true;
+    if (*(lhs.a) < *(rhs.a)) return true;
+    if (*(lhs.a) == *(rhs.a) && *(lhs.b) < *(rhs.b)) return true;
     return false;
+}
+
+ostream& operator<<(ostream& out, const Edge& rhs) {
+    out << "(" << rhs.a->getName() << ", " << rhs.b->getName() << ")";
+    return out;
 }
 
 Vertex* Edge::getFirst() const {

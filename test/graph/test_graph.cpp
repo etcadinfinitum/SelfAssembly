@@ -30,22 +30,20 @@ bool createNonEmptyGraphFromFile() {
 
 bool createNonEmptyGraphFromBoutiqueVertices() {
     Graph g;
-    Vertex* v1 = new Vertex();
-    v1->setName("1");       // fully optional
-    Vertex* v2 = new Vertex();
-    Vertex* v3 = new Vertex();
-    Vertex* v4 = new Vertex();
-    Vertex* v5 = new Vertex();
-    Vertex* v6 = new Vertex();
+    Vertex* v1 = new Vertex("a");
+    Vertex* v2 = new Vertex("b");
+    Vertex* v3 = new Vertex("c");
+    cout << "Join v1 and v2 (a, b)..." << endl;
     assert(g.join(v1, v2));
+    cout << "Sep v2 and v3 (b, c) (should fail)" << endl;
     assert(!g.separate(v2, v3));
+    cout << "Join v2 and v3 (b, c)..." << endl;
     assert(g.join(v2, v3));
-    assert(!g.join(v2, v3)); // duplicate edges are enforced by operator== overload for Edge. 
-                            // 
+    cout << "Join v2 and v3 (b, c) (should fail)..." << endl;
+    assert(!g.join(v2, v3));     // duplicate edges should be detected with comparison overload for Edge. 
+    cout << "Sep v2 and v3 (b, c) (should succeed)..." << endl;
     assert(g.separate(v2, v3));
+    cout << "Sep v2 and v3 (b, c) (should fail)..." << endl;
     assert(!g.separate(v2, v3));
-    delete v4;
-    delete v5;
-    delete v6;
     return true;
 }

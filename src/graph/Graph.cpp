@@ -70,19 +70,16 @@ bool Graph::import(string filename) {
                 if ((*it)->getName() == second) s = *it;
             }
             // if v doesn't exist, create it
-            if (f = nullptr) {
-                f = new Vertex();
-                f->setName(first);
+            if (f == nullptr) {
+                f = new Vertex(first);
                 this->vertices->insert(f);
             }
             if (s == nullptr) {
-                s = new Vertex();
-                s->setName(second);
+                s = new Vertex(second);
                 this->vertices->insert(s);
             }
             // create new Edge
-            Edge* e = new Edge(s, f);
-            this->edges->insert(e);
+            this->join(f, s);
         }
         graphFile.close();
     } else { 
@@ -93,29 +90,37 @@ bool Graph::import(string filename) {
 }
 
 bool Graph::join(Vertex* a, Vertex* b, bool belongs) {
-    if (a == nullptr || b == nullptr) {
-        cerr << "Graph::join(): One or both of the"
-             << " vertices are nullptrs." << endl;
-        return false;
-    }
+    if (a == nullptr || b == nullptr) return false;
     this->vertices->insert(a);
     this->vertices->insert(b);
     Edge* e = new Edge(a, b, belongs);
-    pair<set::iterator<Edge*>, bool> ret = this->edges->insert(e);
-    return ret.second;
+    bool found = false;
+    set<Edge*>::iterator it;
+    for (it = this->edges->begin(); it != this->edges->end(); ++it) {
+        if (*e == *(*it)) {
+            found = true;
+        }
+    }
+    if (found) {
+        delete e;
+        return false;
+    }
+    this->edges->insert(e);
+    return true;
 }
 
 bool Graph::separate(Vertex* a, Vertex* b) {
+    if (a == nullptr || b == nullptr) return false;
     bool found = false;
     Edge* e = new Edge(a, b, false);
     set<Edge*>::iterator it;
     for (it = this->edges->begin(); it != this->edges->end(); ++it) {
-        // compare pointer values for now; may try to check name/label later?
-        if (e == *it) {
+        if (*e == *(*it)) {
             this->edges->erase(it);
             found = true;
+            break;
         }
     }
-    delete e;
+    if (!found) delete e;
     return found;
 }
