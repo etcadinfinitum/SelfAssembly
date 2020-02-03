@@ -22,3 +22,7 @@ void Vertex::setName(string name) {
 string Vertex::getName() {
     return this->name;
 }
+
+string Vertex::getLabel() {
+    return this->label;
+}

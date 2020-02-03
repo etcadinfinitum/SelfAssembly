@@ -15,6 +15,7 @@ class Vertex {
         void setLabel(string);
         void setName(string);
         string getName();
+        string getLabel();
 };
 
 #endif          // VERTEX_H__
