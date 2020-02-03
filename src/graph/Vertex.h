@@ -16,6 +16,7 @@ class Vertex {
         void setName(string);
         string getName();
         string getLabel();
+        friend bool operator==(const Vertex&, const Vertex&);
 };
 
 #endif          // VERTEX_H__

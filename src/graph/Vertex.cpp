@@ -26,3 +26,7 @@ string Vertex::getName() {
 string Vertex::getLabel() {
     return this->label;
 }
+
+bool operator==(const Vertex& lhs, const Vertex& rhs) {
+    return lhs.name == rhs.name;
+}
