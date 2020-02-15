@@ -161,3 +161,15 @@ Graph& Graph::operator=(const Graph& rhs) {
     }
     return *this;
 }
+
+/**
+ * This method is used to split a tree along the indicated edge into 
+ * its two disparate components.
+ *
+ * Precondition: the this object is a spanning tree with no cycles 
+ * which contain the edge e.
+ */
+pair<Graph*, Graph*>* Graph::splitTree(shared_ptr<Edge> e) {
+    // TODO: implement
+    return nullptr;
+}
