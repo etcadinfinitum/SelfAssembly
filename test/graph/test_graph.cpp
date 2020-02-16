@@ -12,6 +12,7 @@ bool createNonEmptyGraphFromBoutiqueVertices();
 bool testCopyAssignment();
 bool testCopyConstructor();
 bool testTreeSplitting();
+bool testTreeSplittingFailure();
 
 int main() {
     assert(createEmptyGraph());
@@ -20,6 +21,7 @@ int main() {
     assert(testCopyAssignment());
     assert(testCopyConstructor());
     assert(testTreeSplitting());
+    assert(testTreeSplittingFailure());
     return 0;
 }
 
@@ -117,5 +119,22 @@ bool testTreeSplitting() {
     delete split1->first;
     delete split1->second;
     delete split1;
+    return true;
+}
+
+bool testTreeSplittingFailure() {
+    cout << "Testing tree splitting along nonexistent edge...\n";
+    Graph g;
+    shared_ptr<Vertex> v1 = make_shared<Vertex>("a");
+    shared_ptr<Vertex> v2 = make_shared<Vertex>("b");
+    shared_ptr<Vertex> v3 = make_shared<Vertex>("c");
+    shared_ptr<Vertex> v4 = make_shared<Vertex>("d");
+    assert(g.join(v1, v2));
+    assert(g.join(v2, v3));
+    assert(g.join(v3, v4));
+    shared_ptr<Edge> eFail = make_shared<Edge>(v1, v4);
+    pair<Graph*, Graph*>* split1 = g.splitTree(eFail);
+    assert(split1 == nullptr);
+    cout << endl;
     return true;
 }
