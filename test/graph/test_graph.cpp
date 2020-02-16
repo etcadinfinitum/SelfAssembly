@@ -33,6 +33,7 @@ bool createNonEmptyGraphFromFile() {
 }
 
 bool createNonEmptyGraphFromBoutiqueVertices() {
+    cout << "Testing graph construction using join()/separate()...\n";
     Graph g;
     shared_ptr<Vertex> v1 = make_shared<Vertex>("a");
     shared_ptr<Vertex> v2 = make_shared<Vertex>("b");
@@ -49,22 +50,32 @@ bool createNonEmptyGraphFromBoutiqueVertices() {
     assert(g.separate(v2, v3));
     cout << "Sep v2 and v3 (b, c) (should fail)..." << endl;
     assert(!g.separate(v2, v3));
+    cout << "Final graph: \n" << g << endl;
+    cout << endl;
     return true;
 }
 
 bool testCopyAssignment() {
+    cout << "Testing copy assignment...\n";
     Graph g;
     assert(g.import("graph_schemas/cycleThree.txt"));
     Graph h;
     h = g;
     assert(&g != &h);
+    cout << "Graph g: \n" << g;
+    cout << "Graph h: \n" << h;
+    cout << endl;
     return true;
 }
 
 bool testCopyConstructor() {
+    cout << "Testing copy constructor...\n";
     Graph g;
     assert(g.import("graph_schemas/cycleThree.txt"));
     Graph h(g);
     assert(&g != &h);
+    cout << "Graph g: \n" << g;
+    cout << "Graph h: \n" << h;
+    cout << endl;
     return true;
 }
