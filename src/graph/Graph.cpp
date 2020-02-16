@@ -163,6 +163,34 @@ Graph& Graph::operator=(const Graph& rhs) {
     return *this;
 }
 
+bool Graph::containsEdge(shared_ptr<Edge> e) {
+    set<shared_ptr<Edge>>::iterator it;
+    for (it = this->edges->begin(); it != this->edges->end(); ++it) {
+        if (*((*it).get()) == *(e.get())) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Graph::containsVertex(shared_ptr<Vertex> v) {
+    set<shared_ptr<Vertex>>::iterator it;
+    for (it = this->vertices->begin(); it != this->vertices->end(); ++it) {
+        if (*((*it).get()) == *(v.get())) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Graph::addVertex(shared_ptr<Vertex> v) {
+    if (this->containsVertex(v)) {
+        return false;
+    }
+    this->vertices->insert(v);
+    return true;
+}
+
 /**
  * This method is used to split a tree along the indicated edge into 
  * its two disparate components.
