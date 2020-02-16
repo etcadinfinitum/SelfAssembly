@@ -3,6 +3,7 @@
 #include <set>
 #include <fstream>  // std::ifstream
 #include <memory>   // std::shared_ptr, std::make_shared
+#include <iostream>
 #include "Graph.h"
 #include "Vertex.h"
 #include "Edge.h"
@@ -172,4 +173,20 @@ Graph& Graph::operator=(const Graph& rhs) {
 pair<Graph*, Graph*>* Graph::splitTree(shared_ptr<Edge> e) {
     // TODO: implement
     return nullptr;
+}
+
+ostream& operator<<(ostream& out, const Graph& obj) {
+    out << "Vertices by name: ";
+    set<shared_ptr<Vertex>>::iterator iter;
+    for (iter = obj.vertices->begin(); iter != obj.vertices->end(); ++iter) {
+        out << *((*iter).get()) << ", ";
+    }
+    out << "\n";
+    out << "Edges by name: ";
+    set<shared_ptr<Edge>>::iterator it;
+    for (it = obj.edges->begin(); it != obj.edges->end(); ++it) {
+        out << *((*it).get()) << ", ";
+    }
+    out << "\n";
+    return out;
 }

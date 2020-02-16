@@ -22,7 +22,7 @@ class Graph {
         bool separate(shared_ptr<Vertex>, shared_ptr<Vertex>);
         pair<Graph*, Graph*>* splitTree(shared_ptr<Edge> e);
         Graph& operator=(const Graph& rhs);
-        // TODO: operator overload for ostream
+        friend ostream& operator<<(ostream&, const Graph&);
 };
 
 #endif          // GRAPH_H__
