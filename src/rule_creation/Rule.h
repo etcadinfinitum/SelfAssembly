@@ -9,15 +9,20 @@ using namespace std;
 
 class Rule {
     private:
-        // TODO: is this the best way to describe a rule?
         Graph* initialState = nullptr;
         Graph* finalState = nullptr;
-        // TODO: is this a better alternate?
-        // for each v: pair.first is old label, pair.second is new
-        vector<pair<string, string>*>* labels = nullptr;
+        // necessary to ensure state preservation of labels for vertices; label 
+        // member of Vertex* will change throughout call stack
+        vector<pair<shared_ptr<Vertex> vertex, pair<string, string> lhsToRhs>*>* labelData;
         
     public:
+        Rule();
+        ~Rule();
         friend ostream& operator<<(ostream&, const Rule&);
-        friend bool operator==(const Rule&, const Rule&);
+        // TODO: is equality comparison needed?
+        // friend bool operator==(const Rule&, const Rule&);
+        bool addVertex(shared_ptr<Vertex> v, string lhsLabel, string rhsLabel);
+        bool lhsJoin(shared_ptr<Vertex> v1, shared_ptr<Vertex> v2);
+        bool rhsJoin(shared_ptr<Vertex> v1, shared_ptr<Vertex> v2);
         
 };
