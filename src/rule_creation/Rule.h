@@ -24,5 +24,6 @@ class Rule {
         bool addVertex(shared_ptr<Vertex> v, string lhsLabel, string rhsLabel);
         bool lhsJoin(shared_ptr<Vertex> v1, shared_ptr<Vertex> v2);
         bool rhsJoin(shared_ptr<Vertex> v1, shared_ptr<Vertex> v2);
-        
+        Graph* getLeftGraph();
+        Graph* getRightGraph();
 };

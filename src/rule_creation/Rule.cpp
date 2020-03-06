@@ -85,3 +85,11 @@ bool Rule::rhsJoin(shared_ptr<Vertex> v1, shared_ptr<Vertex> v2) {
     // call finalState->join(v1, v2) and return result
     return false;
 }
+
+Graph* Rule::getLeftGraph() {
+    return this->initialState;
+}
+
+Graph* Rule::getRightGraph() {
+    return this->finalState;
+}
