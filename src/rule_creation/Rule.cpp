@@ -49,11 +49,19 @@ bool operator==(const Rule& lhs, const Rule& rhs) {
  * component of state preservation of rules.
  */
 bool addVertex(shared_ptr<Vertex> v, string lhsLabel, string rhsLabel) {
-    // TODO: implement
     // Add vertex to both LHS and RHS graph if not already present
+    this->initialState->addVertex(v);
+    this->finalState->addVertex(v);
     // Add vertex to labelData vector if not already present
-    // If present, need to determine how this should be handled.
-    return false;
+    vertex<pair<shared_ptr<Vertex>, pair<string, string>>>::iterator it;
+    for (it = this->labelData->begin(); it != this->labelData->end(); ++it) {
+        // return false if present already (for now)
+        if ((*it)->first == v) return false;
+    }
+    pair<string, string> labels = make_pair(lhsLabel, rhsLabel);
+    pair<shared_ptr<Vertex>, pair<string, string>> node = new pair(v, labels);
+    this->labelData->insert(this->labelData->begin(), node);
+    return true;
 }
 
 /**
