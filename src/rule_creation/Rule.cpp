@@ -9,7 +9,7 @@ using namespace std;
 Rule::Rule() {
     this->initialState = new Graph();
     this->finalState = new Graph();
-    this->labelData = new vector<pair<shared_ptr<Vertex>, pair<string, string>>*>();
+    this->labelData = new vector<pair<shared_ptr<Vertex>, pair<string, string>*>*>();
 }
 
 /**
@@ -19,7 +19,7 @@ Rule::Rule() {
 Rule::~Rule() {
     delete this->initialState;
     delete this->finalState;
-    vector<pair<shared_ptr<Vertex>, pair<string, string>>>::iterator it;
+    vector<pair<shared_ptr<Vertex>, pair<string, string>*>*>::iterator it;
     for (it = this->labelData->begin(); it != this->labelData->end(); ++it) {
         delete *it;
     }
@@ -48,18 +48,18 @@ bool operator==(const Rule& lhs, const Rule& rhs) {
  * Method which adds vertex and label assignment to rule; core 
  * component of state preservation of rules.
  */
-bool addVertex(shared_ptr<Vertex> v, string lhsLabel, string rhsLabel) {
+bool Rule::addVertex(shared_ptr<Vertex> v, string lhsLabel, string rhsLabel) {
     // Add vertex to both LHS and RHS graph if not already present
     this->initialState->addVertex(v);
     this->finalState->addVertex(v);
     // Add vertex to labelData vector if not already present
-    vertex<pair<shared_ptr<Vertex>, pair<string, string>>>::iterator it;
+    vector<pair<shared_ptr<Vertex>, pair<string, string>*>*>::iterator it;
     for (it = this->labelData->begin(); it != this->labelData->end(); ++it) {
         // return false if present already (for now)
         if ((*it)->first == v) return false;
     }
-    pair<string, string> labels = make_pair(lhsLabel, rhsLabel);
-    pair<shared_ptr<Vertex>, pair<string, string>> node = new pair(v, labels);
+    pair<string, string>* labels = new pair<string, string>(lhsLabel, rhsLabel);
+    pair<shared_ptr<Vertex>, pair<string, string>*>* node = new pair<shared_ptr<Vertex>, pair<string, string>*>(v, labels);
     this->labelData->insert(this->labelData->begin(), node);
     return true;
 }
@@ -68,7 +68,7 @@ bool addVertex(shared_ptr<Vertex> v, string lhsLabel, string rhsLabel) {
  * Method which forms edges in LHS graph representation; core 
  * component of rule type & purpose.
  */
-bool lhsJoin(shared_ptr<Vertex> v1, shared_ptr<Vertex> v2) {
+bool Rule::lhsJoin(shared_ptr<Vertex> v1, shared_ptr<Vertex> v2) {
     // TODO: implement
     // call initialState->join(v1, v2) and return result
     return false;
@@ -78,7 +78,7 @@ bool lhsJoin(shared_ptr<Vertex> v1, shared_ptr<Vertex> v2) {
  * Method which forms edges in RHS graph representation; core 
  * component of rule type & purpose.
  */
-bool rhsJoin(shared_ptr<Vertex> v1, shared_ptr<Vertex> v2) {
+bool Rule::rhsJoin(shared_ptr<Vertex> v1, shared_ptr<Vertex> v2) {
     // TODO: implement
     // call finalState->join(v1, v2) and return result
     return false;

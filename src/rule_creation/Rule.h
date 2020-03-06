@@ -13,7 +13,7 @@ class Rule {
         Graph* finalState = nullptr;
         // necessary to ensure state preservation of labels for vertices; label 
         // member of Vertex* will change throughout call stack
-        vector<pair<shared_ptr<Vertex> vertex, pair<string, string> lhsToRhs>*>* labelData;
+        vector<pair<shared_ptr<Vertex>, pair<string, string>*>*>* labelData;
         
     public:
         Rule();
