@@ -21,8 +21,10 @@ Rule::~Rule() {
     delete this->finalState;
     vector<pair<shared_ptr<Vertex>, pair<string, string>*>*>::iterator it;
     for (it = this->labelData->begin(); it != this->labelData->end(); ++it) {
+        delete (*it)->second;
         delete *it;
     }
+    delete labelData;
 }
 
 /**
