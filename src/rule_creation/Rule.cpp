@@ -71,9 +71,8 @@ bool Rule::addVertex(shared_ptr<Vertex> v, string lhsLabel, string rhsLabel) {
  * component of rule type & purpose.
  */
 bool Rule::lhsJoin(shared_ptr<Vertex> v1, shared_ptr<Vertex> v2) {
-    // TODO: implement
     // call initialState->join(v1, v2) and return result
-    return false;
+    return this->initialState->join(v1, v2);
 }
 
 /**
