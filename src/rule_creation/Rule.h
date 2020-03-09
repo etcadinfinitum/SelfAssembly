@@ -14,7 +14,7 @@ class Rule {
         // necessary to ensure state preservation of labels for vertices; label 
         // member of Vertex* will change throughout call stack
         vector<pair<shared_ptr<Vertex>, pair<string, string>*>*>* labelData;
-        
+        bool confirmLabelDataForVertexJoin(shared_ptr<Vertex> v1, shared_ptr<Vertex> v2);
     public:
         Rule();
         ~Rule();

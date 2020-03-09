@@ -66,11 +66,33 @@ bool Rule::addVertex(shared_ptr<Vertex> v, string lhsLabel, string rhsLabel) {
     return true;
 }
 
+bool Rule::confirmLabelDataForVertexJoin(shared_ptr<Vertex> v1, shared_ptr<Vertex> v2) {
+    bool hasV1 = false;
+    bool hasV2 = false;
+    // check for v1 and v2 in labelData set
+    vector<pair<shared_ptr<Vertex>, pair<string, string>*>*>::iterator it;
+    for (it = this->labelData->begin(); it != this->labelData->end(); ++it) {
+        // return false if present already (for now)
+        if (*((*it)->first) == *(v1.get())) hasV1 = true;
+        if (*((*it)->first) == *(v2.get())) hasV2 = true;
+    }
+    if (!hasV1) {
+        cerr << "WARNING: label data for v1 with name " << v1.get()->getName()
+             << " is not in labelData set." << endl;
+    }
+    if (!hasV1) {
+        cerr << "WARNING: label data for v2 with name " << v2.get()->getName()
+             << " is not in labelData set." << endl;
+    }
+    return hasV1 && hasV2;
+}
+
 /**
  * Method which forms edges in LHS graph representation; core 
  * component of rule type & purpose.
  */
 bool Rule::lhsJoin(shared_ptr<Vertex> v1, shared_ptr<Vertex> v2) {
+    if (!this->confirmLabelDataForVertexJoin(v1, v2)) return false;
     // call initialState->join(v1, v2) and return result
     return this->initialState->join(v1, v2);
 }

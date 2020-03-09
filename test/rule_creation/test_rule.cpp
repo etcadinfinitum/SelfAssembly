@@ -59,14 +59,14 @@ bool testLeftVertexJoin() {
     shared_ptr<Edge> e = make_shared<Edge>(v1, v2);
     assert(r->addVertex(v1, "a", "b"));
     // NOTE: the fact that addVertex(v2) was not called presents an 
-    // interesting problem for rule completeness. There are a few potential 
-    // routes for refactoring this:
-    // 1) Require all parameters for Join operations (labels included)
-    // 2) Perform a completeness check at the end of a specific operation:
-    //    a) at the beginning or end of the join() call for rules
+    // interesting problem for rule completeness.
+    // The solution here is:
+    // Perform a completeness check at the end of a specific operation:
+    //    a) at the beginning of the join() call for rules
     //    b) in the operator<< function
-    // Solution is forthcoming...
     assert(!(r->lhsJoin(v1, v1)));
+    assert(!(r->lhsJoin(v1, v2)));
+    assert(r->addVertex(v2, "a", "c"));
     assert(r->lhsJoin(v1, v2));
     assert(!(r->lhsJoin(v1, v2)));
     Graph* lhs = r->getLeftGraph();
