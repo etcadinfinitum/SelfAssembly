@@ -40,12 +40,6 @@ ostream& operator<<(ostream& out, const Rule& rule) {
     return out;
 }
 
-/*
-bool operator==(const Rule& lhs, const Rule& rhs) {
-    return false;
-}
-*/
-
 /**
  * Method which adds vertex and label assignment to rule; core 
  * component of state preservation of rules.

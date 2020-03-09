@@ -19,8 +19,6 @@ class Rule {
         Rule();
         ~Rule();
         friend ostream& operator<<(ostream&, const Rule&);
-        // TODO: is equality comparison needed?
-        // friend bool operator==(const Rule&, const Rule&);
         bool addVertex(shared_ptr<Vertex> v, string lhsLabel, string rhsLabel);
         bool lhsJoin(shared_ptr<Vertex> v1, shared_ptr<Vertex> v2);
         bool rhsJoin(shared_ptr<Vertex> v1, shared_ptr<Vertex> v2);
