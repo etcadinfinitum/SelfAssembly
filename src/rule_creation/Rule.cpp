@@ -102,9 +102,9 @@ bool Rule::lhsJoin(shared_ptr<Vertex> v1, shared_ptr<Vertex> v2) {
  * component of rule type & purpose.
  */
 bool Rule::rhsJoin(shared_ptr<Vertex> v1, shared_ptr<Vertex> v2) {
-    // TODO: implement
+    if (!this->confirmLabelDataForVertexJoin(v1, v2)) return false;
     // call finalState->join(v1, v2) and return result
-    return false;
+    return this->finalState->join(v1, v2);
 }
 
 Graph* Rule::getLeftGraph() {
