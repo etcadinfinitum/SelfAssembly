@@ -12,6 +12,7 @@ bool testVertexAdd();
 bool testGetRHSLHSGraphs();
 bool testLeftVertexJoin();
 bool testRightVertexJoin();
+bool testPrint();
 
 int main() {
     assert(testRuleCreation());
@@ -19,6 +20,7 @@ int main() {
     assert(testVertexAdd());
     assert(testLeftVertexJoin());
     assert(testRightVertexJoin());
+    assert(testPrint());
     return 0;
 }
 
@@ -96,6 +98,25 @@ bool testRightVertexJoin() {
     assert(rhs->containsVertex(v1));
     assert(rhs->containsVertex(v2));
     assert(rhs->containsEdge(e));
+    delete r;
+    return true;
+}
+
+bool testPrint() {
+    Rule* r = new Rule();
+    shared_ptr<Vertex> v1 = make_shared<Vertex>("A");
+    shared_ptr<Vertex> v2 = make_shared<Vertex>("B");
+    shared_ptr<Vertex> v3 = make_shared<Vertex>("C");
+    shared_ptr<Edge> e = make_shared<Edge>(v1, v2);
+    assert(r->addVertex(v1, "a", "b"));
+    assert(r->addVertex(v2, "a", "c"));
+    assert(r->addVertex(v3, "a", "d"));
+    assert(r->lhsJoin(v1, v2));
+    assert(r->lhsJoin(v2, v3));
+    assert(r->rhsJoin(v1, v2));
+    assert(r->rhsJoin(v2, v3));
+    assert(r->rhsJoin(v3, v1));
+    cout << *r << endl;
     delete r;
     return true;
 }
