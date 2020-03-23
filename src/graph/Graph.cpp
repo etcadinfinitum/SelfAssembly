@@ -279,3 +279,11 @@ ostream& operator<<(ostream& out, const Graph& obj) {
     out << "\n";
     return out;
 }
+
+set<shared_ptr<Vertex>>* Graph::getVertices() {
+    return this->vertices;
+}
+
+set<shared_ptr<Edge>>* Graph::getEdges() {
+    return this->edges;
+}
