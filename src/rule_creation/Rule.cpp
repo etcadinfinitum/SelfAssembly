@@ -27,6 +27,18 @@ Rule::~Rule() {
     delete labelData;
 }
 
+pair<string, string>* Rule::getLabelsForNamedVertex(string name) const {
+    vector<pair<shared_ptr<Vertex>, pair<string, string>*>*>::iterator it;
+    for (it = labelData->begin(); it != labelData->end(); ++it) {
+        if ((*it)->first->getName() == name) {
+            return (*it)->second;
+        }
+    }
+    cerr << "ERROR: label pair not found in current rule for node name " << name << ". Throwing exception." << endl;
+    throw 1;
+    // return nullptr;
+}
+
 /**
  * String representation of rules is required for manual confirmation 
  * of rule correctness, as well as consumption by code generator. 
@@ -36,7 +48,65 @@ Rule::~Rule() {
  * until further notice.
  */
 ostream& operator<<(ostream& out, const Rule& rule) {
-    // TODO: implement
+    // add rule delimiter (multi-line rule)
+    out << "++++" << endl;
+    // write out LHS graph
+    // format: name:label --> [ name:label ... ]
+    set<shared_ptr<Vertex>>* leftVertices = rule.getLeftGraph()->getVertices();
+    set<shared_ptr<Vertex>>::iterator iterLeftVert;
+    for (iterLeftVert = leftVertices->begin(); iterLeftVert != leftVertices->end(); ++iterLeftVert) {
+        // write LHS name
+        out << *((*iterLeftVert).get()) << ":";
+        // write LHS label
+        out << rule.getLabelsForNamedVertex((*iterLeftVert)->getName())->first << " --> [ ";
+        set<shared_ptr<Edge>>* leftEdges = rule.getLeftGraph()->getEdges();
+        set<shared_ptr<Edge>>::iterator iterLeftEdges;
+        for (iterLeftEdges = leftEdges->begin(); iterLeftEdges != leftEdges->end(); ++iterLeftEdges) {
+            // compare vertex to edge pair's first item
+            if ( *((*iterLeftEdges).get()->getFirst()) == *(*iterLeftVert) ) {
+                // write vertex data for edge pair's second item
+                out << (*iterLeftEdges)->getSecond()->getName() << ":";
+                // write LHS label 
+                out << rule.getLabelsForNamedVertex((*iterLeftEdges)->getSecond()->getName())->first << " ";
+            // compare vertex to edge pair's second item
+            } else if ( *((*iterLeftEdges).get()->getSecond()) == *(*iterLeftVert) ) {
+                // write vertex data for edge pair's first item
+                out << (*iterLeftEdges).get()->getFirst()->getName() << ":";
+                out << rule.getLabelsForNamedVertex((*iterLeftEdges)->getFirst()->getName())->first << " ";
+            }
+        }
+        out << "]" << endl;
+    }
+    // add delimiter (multiple lines)
+    out << "====" << endl;
+    // write out RHS graph
+    set<shared_ptr<Vertex>>* rightVertices = rule.getRightGraph()->getVertices();
+    set<shared_ptr<Vertex>>::iterator iterRightVert;
+    for (iterRightVert = rightVertices->begin(); iterRightVert != rightVertices->end(); ++iterRightVert) {
+        // write name
+        out << *((*iterRightVert).get()) << ":";
+        // write RHS label
+        out << rule.getLabelsForNamedVertex((*iterRightVert)->getName())->second << " --> [ ";
+        set<shared_ptr<Edge>>* rightEdges = rule.getRightGraph()->getEdges();
+        set<shared_ptr<Edge>>::iterator iterRightEdges;
+        for (iterRightEdges = rightEdges->begin(); iterRightEdges != rightEdges->end(); ++iterRightEdges) {
+            // compare vertex to edge pair's first item
+            if ( *((*iterRightEdges).get()->getFirst()) == *(*iterRightVert) ) {
+                // write vertex data if present
+                out << (*iterRightEdges).get()->getSecond()->getName() << ":";
+                // write RHS label 
+                out << rule.getLabelsForNamedVertex((*iterRightEdges)->getSecond()->getName())->second << " ";
+                // out << (*iterRightEdges).get()->getSecond()->getLabel() << " ";
+            // compare vertex to edge pair's second item
+            } else if ( *((*iterRightEdges).get()->getSecond()) == *(*iterRightVert) ) {
+                // write vertex data if present
+                out << (*iterRightEdges).get()->getFirst()->getName() << ":";
+                out << rule.getLabelsForNamedVertex((*iterRightEdges)->getFirst()->getName())->second << " ";
+                // out << (*iterRightEdges).get()->getFirst()->getLabel() << " ";
+            }
+        }
+        out << "]" << endl;
+    }
     return out;
 }
 
@@ -101,10 +171,10 @@ bool Rule::rhsJoin(shared_ptr<Vertex> v1, shared_ptr<Vertex> v2) {
     return this->finalState->join(v1, v2);
 }
 
-Graph* Rule::getLeftGraph() {
+Graph* Rule::getLeftGraph() const {
     return this->initialState;
 }
 
-Graph* Rule::getRightGraph() {
+Graph* Rule::getRightGraph() const {
     return this->finalState;
 }
