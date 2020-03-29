@@ -14,8 +14,12 @@ using namespace std;
 class Generator {
     private:
         set<Rule*>* ruleset;
+        const int singletonLabel;
+        int labelCounter = 0;
     public:
+        Generator() : singletonLabel(0) {}
         bool makeTree(Graph* g, shared_ptr<Vertex> lastVertex);
+        void printRules();
         // TODO: makeGraph signature
 };
 
