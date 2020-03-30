@@ -17,8 +17,9 @@ class Generator {
         const int singletonLabel;
         int labelCounter = 0;
     public:
-        Generator() : singletonLabel(0) {}
-        bool makeTree(Graph* g, shared_ptr<Vertex> lastVertex);
+        Generator();
+        ~Generator();
+        bool makeTree(Graph* g);
         void printRules();
         // TODO: makeGraph signature
 };

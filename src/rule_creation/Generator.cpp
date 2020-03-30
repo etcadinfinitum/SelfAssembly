@@ -2,12 +2,25 @@
 #include "Edge.h"
 #include "Graph.h"
 #include "Rule.h"
+#include "Generator.h"
 #include <iostream>
 #include <set>
 #include <utility>
 #include <queue>
 
 using namespace std;
+
+Generator::Generator() : singletonLabel(0) {
+    ruleset = new set<Rule*>();
+}
+
+Generator::~Generator() {
+    set<Rule*>::iterator it;
+    for (it = this->ruleset->begin(); it != this->ruleset->end(); ++it) {
+        delete *it;
+    }
+    delete ruleset;
+}
 
 bool Generator::makeTree(Graph* g) {
     // represent processed edges to avoid backtracking
@@ -37,7 +50,7 @@ bool Generator::makeTree(Graph* g) {
         // iterate through all edges in g, 
         // pushing all vertices if edge contains popped
         set<shared_ptr<Edge>>::iterator it;
-        for (it = g->getEdges()->begin(); it != g->getEdges->end(); ++it) {
+        for (it = g->getEdges()->begin(); it != g->getEdges()->end(); ++it) {
             // do not enqueue same edge
             if (*it == popped.second) continue;
             if ((*it)->getFirst() == popped.first) {
@@ -75,6 +88,8 @@ bool Generator::makeTree(Graph* g) {
         newRule->addVertex(altVtx, secondVtxOldLabel, secondVtxNewLabel);
         // perform rhsJoin on vertices
         newRule->rhsJoin(popped.first, altVtx);
+        // add rule to ruleset
+        this->ruleset->insert(newRule);
         // add popped edge to hasRule set
         hasRule.insert(popped.second);
     }
@@ -84,6 +99,6 @@ bool Generator::makeTree(Graph* g) {
 void Generator::printRules() {
     set<Rule*>::iterator it;
     for (it = this->ruleset->begin(); it != this->ruleset->end(); ++it) {
-        cout << *it << endl;
+        cout << *(*it) << endl;
     }
 }
