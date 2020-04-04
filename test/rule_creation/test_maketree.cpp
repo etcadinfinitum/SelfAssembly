@@ -29,6 +29,12 @@ bool testKiteTreeRuleCreation() {
 }
 
 bool testYoyoTreeRuleCreation() {
-    // TODO
+    Graph* g = new Graph();
+    assert(g->import("graph_schemas/yoyo.txt"));
+    Generator* gtr = new Generator();
+    assert(gtr->makeTree(g));
+    gtr->printRules();
+    delete g;
+    delete gtr;
     return true;
 }
