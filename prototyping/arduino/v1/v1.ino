@@ -122,7 +122,7 @@ void performStateChange() {
         // two nodes are valid, and require connection break (reset) 
         // if nodes do not belong in valid rule.
         /*
-        int rule_index = findLabel(CURR_LABEL, incomingValue);
+        int rule_index = findLabel(incomingValue);
         if (rule_index != -1) {
             CURR_LABEL = ruleset[rule_index]
         } else {
@@ -130,6 +130,23 @@ void performStateChange() {
         }
         */
     }
+}
+
+int findLabel(int otherNode) {
+    int idx = -1;
+    for (int i = 0; i < RULE_COUNT; i++) {
+        if (
+            (ruleset[i].pairs[0].older == CURR_LABEL && 
+             ruleset[i].pairs[1].older == otherNode) 
+                ||
+            (ruleset[i].pairs[0].older == otherNode &&
+             ruleset[i].pairs[1].older == CURR_LABEL)
+                                                     ) {
+                idx = i;
+                break;
+        }
+    }
+    return idx;
 }
 
 void disconnect(int v) {
