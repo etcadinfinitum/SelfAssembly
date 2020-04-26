@@ -126,13 +126,15 @@ void performStateChange() {
         if (rule_index != -1) {
             CURR_LABEL = ruleset[rule_index]
         } else {
-            disconnect();
+            disconnect(incomingValue);
         }
         */
     }
 }
 
-void disconnect() {
+void disconnect(int v) {
+    Serial.println("A valid rule did not exist for this combination of labels.");
+    Serial.println("This node: " + String(CURR_LABEL) + " Other node: " + String(v));
     Serial.print("Simulating node disconnect -- ");
     Serial.println("remove input pin connection to pin " + String(EVENT_PIN));
     READY = false;
