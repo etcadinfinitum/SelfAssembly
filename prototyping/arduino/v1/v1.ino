@@ -102,8 +102,9 @@ void loop() {
     if (digitalRead(EVENT_PIN) == HIGH) {
         // Set LED green for now...
         color(0, 255, 0);
-        // TODO: if connection pin lights up, proceed with board-to-board serial 
+        // If connection pin lights up, proceed with board-to-board serial 
         // read/write
+        performStateChange();
     } else {
         // set LED color to blue (inactive)
         color(0, 0, 255);
@@ -118,17 +119,20 @@ void performStateChange() {
     if (comms.available()) {
         int incomingValue = comms.read();
         Serial.println("Read neighbor label is: " + String(incomingValue));
-        // TODO: Check map for values; perform label transition if 
+        // Check ruleset for values; perform label transition if 
         // two nodes are valid, and require connection break (reset) 
         // if nodes do not belong in valid rule.
-        /*
         int rule_index = findLabel(incomingValue);
         if (rule_index != -1) {
-            CURR_LABEL = ruleset[rule_index]
+            executeStateChange(rule_index);
+            // LED green for funsies
+            color(0, 255, 0);
+            Serial.println("New label is: " + String(CURR_LABEL));
+            delay(1000);
+            // TODO: stabilize state until user triggers next condition?
         } else {
             disconnect(incomingValue);
         }
-        */
     }
 }
 
@@ -147,6 +151,15 @@ int findLabel(int otherNode) {
         }
     }
     return idx;
+}
+
+void executeStateChange(int idx) {
+    if (ruleset[idx].pairs[0].older == CURR_LABEL) {
+        CURR_LABEL = ruleset[idx].pairs[0].newer;
+    } else if (ruleset[idx].pairs[1].older == CURR_LABEL) {
+        CURR_LABEL = ruleset[idx].pairs[1].newer;
+    }
+    // TODO: reset CURR_LABEL_INDEX to match CURR_LABEL?
 }
 
 void disconnect(int v) {
