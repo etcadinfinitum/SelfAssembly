@@ -21,19 +21,36 @@ SoftwareSerial comms(RX, TX);
 // NOTE: manual cycling behavior is for demonstration purposes only.
 const int BUTTON_PIN = 7;
 
-/*
-const uint8_t MAX_LABELS = $LABELCOUNT;
-const uint8_t[MAX_LABELS] = {
-    // add sorted label list from rule generation here
+const uint8_t MAX_LABELS = 3;   // TODO: define in code generator
+
+const uint8_t labels[MAX_LABELS] = {
+    // TODO: add sorted label list from rule generation here
+    0,
     1,
     2,
-    // ...etc
 };
 uint8_t CURR_LABEL_INDEX = 0;
-*/
 
 // Persist the initial singleton label here; update as state changes
 uint8_t CURR_LABEL = 0;     // Should be initialized by code generator
+
+// Declare a map of currLabel: nextLabel schemas.
+struct label_changes {
+    const int older;
+    const int newer;
+};
+
+struct rule {
+    label_changes pairs[2];
+};
+
+const int RULE_COUNT = 2;       // TODO: define in code generator
+
+rule ruleset[RULE_COUNT] = {
+    // TODO: Add rules here in code generator
+    { pairs: { { older: 0, newer: 1 }, { older: 0, newer: 1 }, }, },
+    { pairs: { { older: 1, newer: 2 }, { older: 1, newer: 2 }, }, },
+};
 
 // Declare a digital pin to be used to detect a mating event.
 uint8_t EVENT_PIN = 4;
