@@ -92,15 +92,11 @@ void loop() {
         READY = true;
     }
     
-    // TODO: check to see if button for board was pressed; 
+    // Check to see if button for board was pressed; 
     // if so; label needs to be cycled.
     if (digitalRead(BUTTON_PIN) == HIGH) {
-        ledOn = true;
-        // TODO: Rearrange so that cycleLabel() gets called
-    } else {
-        ledOn = false;
+        cycleLabel();
     }
-    cycleLabel();
 
     // Check activity state of connection pin
     if (digitalRead(EVENT_PIN) == HIGH) {
@@ -143,14 +139,16 @@ void disconnect() {
 }
 
 void cycleLabel() {
-    // For now, let's just flash the LED
-    if (ledOn) {
-        color(255, 255, 255);
-        delay(200);
-        color(0, 0, 0);
-        delay(200);
-    }
-    // TODO: increment label index and update internal state of node
+    // Set LED, print label cycling initiated
+    color(255, 0, 255);
+    Serial.println("Cycling label for this node.");
+    Serial.print("Old label: " + String(CURR_LABEL));
+    // Increment label index and update internal state of node
+    CURR_LABEL_INDEX = (CURR_LABEL_INDEX + 1) % MAX_LABELS;
+    CURR_LABEL = labels[CURR_LABEL_INDEX];
+    Serial.println(" New label: " + String(CURR_LABEL));
+    // Give user a chance to release button before next loop()
+    delay(200);
 }
 
 void color(unsigned char r, unsigned char g, unsigned char b) {    
