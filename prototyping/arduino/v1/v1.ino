@@ -71,9 +71,9 @@ const int redPin = 11;
 const int greenPin = 10;
 const int bluePin = 9;
 
-bool ledOn = false;
-
 bool READY = true;
+
+bool ACTIVE = false;
 
 void setup() {
     // setup code for node
@@ -89,6 +89,9 @@ void setup() {
 
     // Set up button pin
     pinMode(BUTTON_PIN, INPUT);
+
+    // set LED color to blue (inactive)
+    color(0, 0, 255);
 }
 
 void loop() {
@@ -97,54 +100,81 @@ void loop() {
     // Simulate immediate disconnect of connection events which are 
     // not part of the rule set.
     if (!READY) {
-        // Disconnect event is incomplete; cycle again.
-        if (digitalRead(EVENT_PIN) == HIGH) return;
+        // Disconnect/reset event is incomplete; cycle again.
+        if (digitalRead(EVENT_PIN) != HIGH) return;
         // Otherwise, set READY to true
         READY = true;
+        // set LED color to blue (inactive)
+        color(0, 0, 255);
+        Serial.println("Ready to switch labels -- current label is " + char(CURR_LABEL));
+        // needs delay for user error
+        delay(300);
+        return;
     }
-    
-    // Check to see if button for board was pressed; 
-    // if so; label needs to be cycled.
-    if (digitalRead(BUTTON_PIN) == HIGH) {
-        cycleLabel();
+
+    if (!ACTIVE) { 
+        // Check to see if button for board was pressed; 
+        // if so; label needs to be cycled.
+        if (digitalRead(BUTTON_PIN) == HIGH) {
+            Serial.println("Cycling label because button press was detected.");
+            cycleLabel();
+            return;
+        }
+
+        // set to active on next reset button press
+        if (digitalRead(EVENT_PIN) == HIGH) {
+            Serial.println("Setting state to ACTIVE to find rule on next loop()");
+            Serial.println("Current label is: " + String(CURR_LABEL));
+            ACTIVE = true;
+            delay(200);
+            return;
+        }
     }
 
     // Check activity state of connection pin
-    if (digitalRead(EVENT_PIN) == HIGH) {
-        // Set LED green for now...
-        color(0, 255, 0);
+    if (READY && ACTIVE) { 
         // If connection pin lights up, proceed with board-to-board serial 
         // read/write
         performStateChange();
-    } else {
-        // set LED color to blue (inactive)
-        color(0, 0, 255);
     }
 }
 
 void performStateChange() {
     // Send state label to other board 
     comms.print(char(CURR_LABEL));
-    Serial.println("Current label is: " + String(CURR_LABEL));
     // Read other cube face value, activate LEDs
     if (comms.available()) {
-        int incomingValue = comms.read();
+        char incomingValue = comms.read();
         Serial.println("Read neighbor label is: " + String(incomingValue));
         // Check ruleset for values; perform label transition if 
         // two nodes are valid, and require connection break (reset) 
         // if nodes do not belong in valid rule.
         int rule_index = findLabel(incomingValue);
         if (rule_index != -1) {
-            executeStateChange(rule_index);
-            // LED green for funsies
-            color(0, 255, 0);
-            Serial.println("New label is: " + String(CURR_LABEL));
-            delay(1000);
-            // TODO: stabilize state until user triggers next condition?
+            if (executeStateChange(rule_index)) {
+                // LED green for funsies
+                color(0, 255, 0);
+                Serial.println("Rule successfully applied!");
+                Serial.println("New label is: " + String(CURR_LABEL));
+            } else {
+                // LED orange -- rule found but not successfully applied?!
+                color(255, 165, 0);
+                Serial.println("A rule was found but could not be successfully applied.");
+            }
         } else {
             disconnect(incomingValue);
         }
+        // Stabilize state until user triggers next condition
+        READY = false;
+        ACTIVE = false;
+        Serial.println("Hit reset button to switch node labels and try another rule.");
+    } else {
+        READY = false;
+        ACTIVE = false;
+        color(255, 150, 5);   // orange-ish
+        Serial.println("SoftwareSerial comms are not available; check that all boards are powered and connected.");
     }
+    comms.listen();
 }
 
 int findLabel(int otherNode) {
@@ -164,21 +194,25 @@ int findLabel(int otherNode) {
     return idx;
 }
 
-void executeStateChange(int idx) {
-    if (ruleset[idx].pairs[0].older == CURR_LABEL) {
+bool executeStateChange(int idx) {
+    if (ruleset[idx].pairs[0].older == int(char(CURR_LABEL))) {
         CURR_LABEL = ruleset[idx].pairs[0].newer;
+        return true;
     } else if (ruleset[idx].pairs[1].older == CURR_LABEL) {
         CURR_LABEL = ruleset[idx].pairs[1].newer;
+        return true;
     }
     // TODO: reset CURR_LABEL_INDEX to match CURR_LABEL?
+    return false;
 }
 
 void disconnect(int v) {
     Serial.println("A valid rule did not exist for this combination of labels.");
     Serial.println("This node: " + String(CURR_LABEL) + " Other node: " + String(v));
     Serial.print("Simulating node disconnect -- ");
-    Serial.println("remove input pin connection to pin " + String(EVENT_PIN));
-    READY = false;
+    Serial.println("hit reset button connected to pin " + String(EVENT_PIN));
+    // LED red for funsies
+    color(255, 0, 0);
 }
 
 void cycleLabel() {
@@ -192,9 +226,11 @@ void cycleLabel() {
     Serial.println(" New label: " + String(CURR_LABEL));
     // Give user a chance to release button before next loop()
     delay(200);
+    // Reset LED to blue (inactive)
+    color(0, 0, 255);
 }
 
-void color(unsigned char r, unsigned char g, unsigned char b) {    
+void color(unsigned char r, unsigned char g, unsigned char b) {
     analogWrite(redPin, r);
     analogWrite(greenPin, g);
     analogWrite(bluePin, b);
