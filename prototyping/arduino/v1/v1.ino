@@ -47,7 +47,7 @@ const uint8_t labels[MAX_LABELS] = {
 uint8_t CURR_LABEL_INDEX = 0;
 
 // Persist the initial singleton label here; update as state changes
-uint8_t CURR_LABEL = 0;     // Should be initialized by code generator
+int CURR_LABEL = 0;     // Should be initialized by code generator
 
 const int RULE_COUNT = 2;       // TODO: define in code generator
 
@@ -106,7 +106,7 @@ void loop() {
         READY = true;
         // set LED color to blue (inactive)
         color(0, 0, 255);
-        Serial.println("Ready to switch labels -- current label is " + char(CURR_LABEL));
+        Serial.println("Ready to switch labels -- current label is " + ((char)CURR_LABEL + '0'));
         // needs delay for user error
         delay(300);
         return;
@@ -140,11 +140,28 @@ void loop() {
 }
 
 void performStateChange() {
-    // Send state label to other board 
-    comms.print(char(CURR_LABEL));
+    /*
+    // flush the buffer??
+    while (comms.available()) {
+        char t = comms.read();
+    }
+    */
+    // Send state label to other board
+    char toSend = char(CURR_LABEL);
+    int sentChars = comms.print(toSend);
+    Serial.println("Sent a total of " + String(sentChars) + " characters to neighbor. Sent char was " + toSend);
+    // delay(300);
     // Read other cube face value, activate LEDs
+    int waits = 0;
+    while (comms.available() == 0) {
+        // wait
+        waits++;
+    }
     if (comms.available()) {
+        int charcount = comms.available();
         char incomingValue = comms.read();
+        Serial.println("Char is " + String(incomingValue) + "; int is " + String((uint8_t) incomingValue));
+        Serial.println("There were a total of " + String(charcount) + " characters available.");
         Serial.println("Read neighbor label is: " + String(incomingValue));
         // Check ruleset for values; perform label transition if 
         // two nodes are valid, and require connection break (reset) 
