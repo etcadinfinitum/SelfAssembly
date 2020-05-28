@@ -34,11 +34,15 @@ Each board's individual device setup should look like this:
 
 ![individual board setup](./images/wiring_2.png)
 
+[View the Tinkercad schematic.](https://www.tinkercad.com/things/ad7iGvBdCdT)
+
 ### Set up board's connective event button.
 
 A similar button setup is created for initiating a connection event. The button's output line should be connected to digital pin 4 on the Arduino. This button is set up on a separate mini breadboard for clarity.
 
 ![event button setup](./images/wiring_3.png)
+
+[View the Tinkercad schematic.](https://www.tinkercad.com/things/eW3hlQi3E23)
 
 ### Set up second board with identical setup using previous steps.
 
@@ -46,11 +50,15 @@ After setting up second board, the devices should be configured as follows:
 
 ![second board setup](./images/wiring_4.png)
 
+[View the Tinkercad schematic.](https://www.tinkercad.com/things/6L1DwyzBF5q)
+
 ### Connect RX and TX lines between the two boards for serial communication.
 
 Connect digital pin 2 (RX) on the first board to digital pin 3 (TX) on the second board, so that board 2 can send data to board 1. Connect a second line so that board 1 can send data to board 2.
 
 ![full setup](./images/wiring_full.png)
+
+[View the Tinkercad schematic.](https://www.tinkercad.com/things/5IB2VWTB7U2)
 
 ## Tips and Tricks for Working with Arduinos
 
