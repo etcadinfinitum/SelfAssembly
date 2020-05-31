@@ -16,10 +16,14 @@ def write_rules(rules):
 
         # write out label data
         outfile.write('const uint8_t MAX_LABELS = %s;\n' % len(rules._labels))
-        outfile.write('uint8_t CURR_LABEL_INDEX = 0;\n')
+        # TODO: adapt variable type to label type
         outfile.write('const uint8_t labels[MAX_LABELS] = {\n')
         for label in sorted(list(rules._labels)):
             outfile.write('    %s,\n' % label)
+        outfile.write('};\n\n')
+        outfile.write('uint8_t CURR_LABEL_INDEX = 0;\n')
+        # TODO: adapt variable type to label type
+        outfile.write('int CURR_LABEL = labels[CURR_LABEL_INDEX];\n')
 
         # write rule label pairs
         outfile.write('const int RULE_COUNT = %s;\n' % len(rules))
