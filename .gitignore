@@ -4,3 +4,5 @@ vgcore*
 
 __pycache__/
 *.pyc
+
+**/output/
